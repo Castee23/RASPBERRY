@@ -27,11 +27,11 @@ int i2c_write(int fd, uint8_t reg, uint8_t *data, int len, int addr){
     memset(&messages, 0, sizeof(messages));
     messages.addr = addr; // direccion del dispositivo ??
     messages.flags = 0;   // escritura
-    messages.len = len+1;  
+    messages.len = len;  //-1
     messages.buf  = buffer; // lo q se va aescribir
 
     if (ioctl(fd, I2C_RDWR, &messages) < 0) {
-        perror("Error en i2c_write_data");
+        perror("Error en i2c_write");
         return -1;
     }
     return 0;
