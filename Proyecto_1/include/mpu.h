@@ -27,9 +27,9 @@
 
  typedef struct 
  {
-    _Float16 ax;
-    _Float16 ay;
-    _Float16 az;
+    float ax;
+    float ay;
+    float az;
  }Mpu_accel;
 
  int mpu_init(int fd, int addr);
