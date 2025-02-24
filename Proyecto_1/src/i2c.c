@@ -25,6 +25,7 @@ int i2c_write(int fd, uint8_t reg, uint8_t *data, int len, int addr){
         perror("Error en i2c_write_data");
         return -1;
     }
+    return 0;
 }
 
 int i2c_read(int fd, uint8_t reg, uint8_t *data, int len, int addr) {
