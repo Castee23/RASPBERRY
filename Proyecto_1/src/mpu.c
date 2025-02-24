@@ -1,4 +1,4 @@
-#include "Mpu6050.h"
+#include "mpu.h"
 #include <stdio.h>
 
 int mpu(void){

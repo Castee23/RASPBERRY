@@ -1,5 +1,6 @@
 #ifndef __MPU6050_H
 #define __MPU6050_H
+#include <stdint.h>
 
 #define ADRESS          0x68
 #define DEVICE_RESET    0x6B
