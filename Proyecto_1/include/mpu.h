@@ -18,7 +18,7 @@
  #define TEMP_OUT        0x41
  
  #define GYRO_CONFIG     0x1B
- #define GYRO_CONFIG     0x43
+ //#define GYRO_CONFIG     0x43
  #define GYRO_XOUT_H     0x44 
  #define GYRO_XOUT_L     0x45
  #define GYRO_YOUT_H     0x46
