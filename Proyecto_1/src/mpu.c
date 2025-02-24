@@ -12,7 +12,7 @@ int mpu_init(int fd, int addr){
 int mpu_read_acceleration(int fd, int addr, Mpu_accel *accel){
   uint8_t data[6]; // cada aceleracion ocupa 2 bytes
 
-  if (i2c_read(fd, ACCEL_XOUT_H, &data, 6, addr)){
+  if (i2c_read(fd, ACCEL_XOUT_H, data, 6, addr)){
     printf("mpu_init error");
     return -1;
   }
