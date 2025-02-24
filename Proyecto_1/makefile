@@ -4,7 +4,7 @@
 # *************************************** #
 SRCS 	=	src/main.c src/i2c.c src/mpu.c 
 CC		=	gcc
-CFLAGS	=	-Wall -Werror
+CFLAGS	=	-Wall -Werror -Iinclude
 OBJT 	=	$(SRCS:.c=.o)
 TARGET  =   proyecto_i2c
 
