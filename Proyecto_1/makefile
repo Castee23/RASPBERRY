@@ -13,7 +13,7 @@ all: $(TARGET)
 
 # Compilacion del ejecutable
 $(TARGET): $(OBJT)
-	$(CC) $(CFLAGS) -o $@ $^ -li2c
+	$(CC) $(CFLAGS) -o $@ $^
 
 # Regla para compilar cada .c en .o
 %.o: %.c 
