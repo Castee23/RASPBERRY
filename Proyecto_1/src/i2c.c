@@ -42,8 +42,8 @@ int i2c_write(int fd, uint8_t reg, uint8_t *data, int len, int addr){
 }
 
 int i2c_read(int fd, uint8_t reg, uint8_t *data, int len, int addr) {
-    Messages messages[2];
-    Packets packet;
+    struct i2c_msg messages[2];
+    struct i2c_rdwr_ioctl_data packet;
     
     // Primer mensaje: se envía el registro de interés
     messages[0].addr  = addr;
@@ -58,7 +58,7 @@ int i2c_read(int fd, uint8_t reg, uint8_t *data, int len, int addr) {
     messages[1].buf   = data;
     
     // Agrupamos los dos mensajes en una sola transacción
-    packet.msgs = messages;
+    packet.msgs  = messages;
     packet.nmsgs = 2;
     
     // Realizamos la transacción I2C
