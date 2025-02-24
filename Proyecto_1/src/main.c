@@ -25,6 +25,7 @@ int main() {
             break;
         }
         printf("Aceleración (g): X=%.2f  Y=%.2f  Z=%.2f\n", accel.ax, accel.ay, accel.az);
+        sleep(3);
     }
     close(fd);
     return 0;
