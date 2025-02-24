@@ -6,13 +6,14 @@ SRCS 	=	src/main.c src/i2c.c src/mpu.c
 CC		=	gcc
 CFLAGS	=	-Wall -Werror
 OBJT 	=	$(SRCS:.c=.o)
+TARGET  =   proyecto_i2c
 
 # Regla prinipal
 all: $(TARGET)
 
 # Compilacion del ejecutable
 $(TARGET): $(OBJT)
-	$(CC) $(CFLAGS) -c $(TARGET) $(OBJT) -li2c
+	$(CC) $(CFLAGS) -o $@ $^ -li2c
 
 # Regla para compilar cada .c en .o
 %.o: %.c 
