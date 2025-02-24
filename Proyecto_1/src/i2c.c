@@ -5,7 +5,15 @@ int i2c_init(int dev, int addr){
     char i2cFile[16];
     sprintf(i2cFile, "/dev/i2c-%d", dev);
     uint8_t fd = open(i2cFile, O_RDWR);
-    ioctl(fd, I2C_SLAVE, addr);
+    if (fd < 0) {
+        perror("Error al abrir el bus I2C");
+        return -1;
+    }
+    if (ioctl(fd, I2C_SLAVE, addr) < 0) {
+        perror("Error al configurar la dirección I2C_SLAVE");
+        close(fd);
+        return -1;
+    }
     return fd;
 }
 int i2c_write(int fd, uint8_t reg, uint8_t *data, int len, int addr){
