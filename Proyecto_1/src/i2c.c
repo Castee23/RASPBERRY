@@ -1,23 +1,16 @@
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/ioctl.h>
-#include <linux/i2c-dev.h>
-#include <string.h>
+
 #include "i2c.h"
 
-int i2c_init(int addr){
-    char i2cFile[15];
-    sprintf(i2cFile, "/dev/i2c-%d", 1);
-    int fd = open(i2cFile, O_RDWR);
+int i2c_init(int dev, int addr){
+    char i2cFile[16];
+    sprintf(i2cFile, "/dev/i2c-%d", dev);
+    uint8_t fd = open(i2cFile, O_RDWR);
     ioctl(fd, I2C_SLAVE, addr);
     return fd;
 }
 int i2c_write(int fd, uint8_t reg, uint8_t *data, int len, int addr){
     uint8_t buffer[len + 1];
-    buffer[0] = reg;
+    buffer[0] = reg;                    // reg = registro al q se quiere acceder
     if (len > 0 && data != NULL) {
         memcpy(&buffer[1], data, len);
     }
@@ -34,7 +27,7 @@ int i2c_write(int fd, uint8_t reg, uint8_t *data, int len, int addr){
     }
 }
 
-int i2c_read_write(int fd, uint8_t reg, uint8_t *data, int len, int addr) {
+int i2c_read(int fd, uint8_t reg, uint8_t *data, int len, int addr) {
     Messages messages[2];
     Packets packet;
     
