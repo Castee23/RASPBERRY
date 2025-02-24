@@ -2,7 +2,7 @@
 
 int mpu_init(int fd, int addr){
   uint8_t data = 0x00;    //valor para despertar al mpu
-  if (i2c_write(fd, MPU_ADRESS, &data, 1, addr)){
+  if (i2c_write(fd, DEVICE_RESET, &data, 1, addr)){
     printf("mpu_init error");
     return -1;
   }
