@@ -20,7 +20,7 @@ int main() {
     while (1) {
         Mpu_accel accel;
 
-        if (mpu_read_accel(fd, MPU_ADRESS, &accel) < 0) {
+        if (mpu_read_acceleration(fd, MPU_ADRESS, &accel) < 0) {
             printf("Error al leer la aceleración\n");
             break;
         }
