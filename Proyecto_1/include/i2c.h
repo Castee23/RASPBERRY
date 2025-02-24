@@ -7,6 +7,7 @@
  #include <fcntl.h>
  #include <sys/ioctl.h>
  #include <linux/i2c-dev.h>
+ #include <linux/i2c.h>
  #include <string.h>
  
  int i2c_init(int dev, int addr);

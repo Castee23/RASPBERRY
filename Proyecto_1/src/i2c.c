@@ -23,17 +23,17 @@ int i2c_write(int fd, uint8_t reg, uint8_t *data, int len, int addr){
         memcpy(&buffer[1], data, len);
     }
 
-    Messages messages;
-    memset(&messages, 0, sizeof(messages));
-    messages.addr = addr; // direccion del dispositivo ??
-    messages.flags = 0;   // escritura
-    messages.len = len+1;  
-    messages.buf  = buffer; // lo q se va aescribir
+    struct i2c_msg message;
+    memset(&message, 0, sizeof(message));
+    message.addr = addr; // direccion del dispositivo ??
+    message.flags = 0;   // escritura
+    message.len = len+1;  
+    message.buf  = buffer; // lo q se va aescribir
 
     struct i2c_rdwr_ioctl_data packets;
-    packets.msgs  = &messages;
+    packets.msgs  = &message;
     packets.nmsgs = 1;
-    
+
     if (ioctl(fd, I2C_RDWR, &packets) < 0) {
         perror("Error en i2c_write");
         return -1;
