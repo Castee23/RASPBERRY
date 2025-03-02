@@ -247,3 +247,5 @@ int mpu_read_acceleration(int fd, int addr, Mpu_accel *accel){
   return 0;
 }
 ```
+---
+Based on: 42Madrid Telefonica, ChatGPT
