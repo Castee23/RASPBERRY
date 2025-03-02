@@ -13,17 +13,4 @@
  int i2c_init(int dev, int addr);
  int i2c_write(int fd, uint8_t reg, uint8_t *data, int len, int addr);
  int i2c_read(int fd, uint8_t reg, uint8_t *data, int len, int addr);
-
- typedef struct {
-    uint8_t addr;
-    uint8_t flags;
-    uint8_t len;
-    uint8_t reg_addr;
-    uint8_t *buf;
- } Messages;
-
- typedef struct {
-    Messages* msgs;
-    uint8_t nmsgs;
- } Packets;
 #endif

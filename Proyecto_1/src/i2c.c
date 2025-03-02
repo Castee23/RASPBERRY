@@ -25,7 +25,7 @@ int i2c_write(int fd, uint8_t reg, uint8_t *data, int len, int addr){
 
     struct i2c_msg message;
     memset(&message, 0, sizeof(message));
-    message.addr = addr; // direccion del dispositivo ??
+    message.addr = addr; 
     message.flags = 0;   // escritura
     message.len = len+1;  
     message.buf  = buffer; // lo q se va aescribir
