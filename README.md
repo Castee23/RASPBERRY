@@ -110,6 +110,7 @@ int i2c_init(int dev, int addr){
     }
     return fd;
 }
+```
 ## i2c_write
 
 1. **¿Cómo funciona el buffer?**  
@@ -158,6 +159,7 @@ int i2c_write(int fd, uint8_t reg, const uint8_t *data, int len, int addr) {
 
     return 0;
 }
+```
 ### i2c_read
 
 1. **Initial Write Message:**  
@@ -200,6 +202,7 @@ int i2c_read(int fd, uint8_t reg, uint8_t *data, int len, int addr) {
     }
     return 0;
 }
+```
 ## Funciones mpu.c
 
 ### mpu_init
@@ -215,6 +218,7 @@ int mpu_init(int fd, int addr){
   }
   return 0;
 }
+```
 ## mpu_read_acceleration
 
 Leemos el primer registro de la aceleración y, a partir de ese registro, se define cuántos bytes leer. Como cada aceleración son 16 bits (2 bytes), se leen 6 bytes en total.  
@@ -242,3 +246,4 @@ int mpu_read_acceleration(int fd, int addr, Mpu_accel *accel){
 
   return 0;
 }
+```
