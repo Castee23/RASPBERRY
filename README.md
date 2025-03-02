@@ -113,47 +113,47 @@ int i2c_init(int dev, int addr){
 ```
 ## i2c_write
 
-1. **¿Cómo funciona el buffer?**  
-   El buffer recoge los datos que se quieren transmitir. En el MPU, el primer byte debe ser el registro del dato que se quiere leer; si se quiere leer la aceleración de X, se debe especificar el registro correspondiente.
+1. **How does the buffer work?**  
+   The buffer collects the data that needs to be transmitted. In the MPU, the first byte must be the register of the data you want to read; if you want to read the X acceleration, you must specify the corresponding register.
 
-2. **Configuración de structs para el mensaje:**  
-   Se configuran dos structs para crear el mensaje.
+2. **Configuration of structs for the message:**  
+   Two structs are configured to create the message.
 
-3. **La función `ioctl(fd, I2C_RDWR, &packets)` realiza lo siguiente:**  
-   1. Como ya se ha realizado el "enlace", ya sabe a qué slave va dirigido.  
-   2. Utiliza `I2C_RDWR`.  
-   3. Finalmente, dado que la estructura `message` está estructurada correctamente siguiendo el protocolo de "tramas" para I2C, la función es capaz de identificar correctamente a qué esclavo se dirige, la opción (W/R) y los datos que se quieren transmitir.
+3. **The function `ioctl(fd, I2C_RDWR, &packets)` does the following:**  
+   1. Since the connection (link) has already been established, it already knows which slave it is addressing.  
+   2. It uses `I2C_RDWR`.  
+   3. Finally, because the `message` structure is correctly formatted according to the I2C frame protocol, the function is able to correctly determine which slave to address, the operation (W/R), and the data to be transmitted.
 
-4. **Estructuras de Messages y Packets:**  
-   Dadas por la librería `<linux/2c.h>`:  
-   1. `struct i2c_msg`: Representa un mensaje de transferencia en el bus I2C.  
-   2. `struct i2c_rdwr_ioctl_data`: Se utiliza con la función `ioctl` para realizar múltiples operaciones de lectura/escritura en una sola transacción.
+4. **Message and Packet Structures:**  
+   Provided by the `<linux/2c.h>` library:  
+   1. `struct i2c_msg`: Represents a transfer message on the I2C bus.  
+   2. `struct i2c_rdwr_ioctl_data`: Used with the `ioctl` function to perform multiple read/write operations in a single transaction.
 
 ```c
 int i2c_write(int fd, uint8_t reg, const uint8_t *data, int len, int addr) {
-    // Buffer que contiene: [reg][data0][data1]...[dataN]
+    // Buffer that contains: [reg][data0][data1]...[dataN]
     uint8_t buffer[len + 1];
     buffer[0] = reg;
     if (len > 0 && data != NULL) {
         memcpy(&buffer[1], data, len);
     }
 
-    // Estructura de mensaje I2C
+    // I2C message structure
     struct i2c_msg message;
     struct i2c_rdwr_ioctl_data packets;
 
-    message.addr  = addr;  // Dirección del esclavo
-    message.flags = 0;     // 0 => escritura
-    message.len   = len + 1;  // 1 (registro) + N datos
+    message.addr  = addr;      // Slave address
+    message.flags = 0;         // 0 => write
+    message.len   = len + 1;     // 1 (register) + N data bytes
     message.buf   = buffer;
 
-    // Empaquetar en la estructura de transacción
+    // Package into the transaction structure
     packets.msgs  = &message;
     packets.nmsgs = 1;
 
-    // Llamada a ioctl para realizar la transacción
+    // Call ioctl to perform the transaction
     if (ioctl(fd, I2C_RDWR, &packets) < 0) {
-        perror("Error en i2c_write_data (ioctl I2C_RDWR)");
+        perror("Error in i2c_write_data (ioctl I2C_RDWR)");
         return -1;
     }
 
@@ -203,43 +203,43 @@ int i2c_read(int fd, uint8_t reg, uint8_t *data, int len, int addr) {
     return 0;
 }
 ```
-## Funciones mpu.c
+## mpu.c Functions
 
 ### mpu_init
 
-Usamos la función de escribir para poner en el registro `0x6B` del MPU el valor `0x00`, ya que por defecto está “dormido”.
+We use the write function to set the MPU register `0x6B` to the value `0x00`, since by default it is “asleep”.
 
 ```c
 int mpu_init(int fd, int addr){
-  uint8_t data = 0x00;    //valor para despertar al mpu
+  uint8_t data = 0x00;    // value to wake up the MPU
   if (i2c_write(fd, DEVICE_RESET, &data, 1, addr)){
     printf("mpu_init error");
     return -1;
   }
   return 0;
 }
-```
+````
 ## mpu_read_acceleration
 
-Leemos el primer registro de la aceleración y, a partir de ese registro, se define cuántos bytes leer. Como cada aceleración son 16 bits (2 bytes), se leen 6 bytes en total.  
-Para convertir los datos de binario a float, es necesario “juntar” los datos de cada aceleración, ya que vienen separados en bytes (alto y bajo).  
-Luego, teniendo en cuenta que las aceleraciones están en términos de g (configurado a 2g), se debe dividir entre el valor especificado en el datasheet, en este caso, 16384.
+We read the first acceleration register and, starting from that register, define how many bytes to read. Since each acceleration is 16 bits (2 bytes), a total of 6 bytes are read.  
+To convert the data from binary to float, it is necessary to “join” the data of each acceleration, as they come separated into bytes (high and low).  
+Then, considering that the acceleration values are expressed in terms of g (configured to 2g), they must be divided by the value specified in the datasheet, in this case, 16384.
 
 ```c
 int mpu_read_acceleration(int fd, int addr, Mpu_accel *accel){
-  uint8_t data[6]; // cada aceleración ocupa 2 bytes
+  uint8_t data[6]; // each acceleration occupies 2 bytes
 
   if (i2c_read(fd, ACCEL_XOUT_H, data, 6, addr)){
     printf("mpu_init error");
     return -1;
   }
 
-  // Unir los bytes altos con los bajos
+  // Combine the high and low bytes
   int16_t raw_x = (data[0] << 8) | data[1];
   int16_t raw_y = (data[2] << 8) | data[3];
   int16_t raw_z = (data[4] << 8) | data[5];
 
-  // Convertir de raw a float dependiendo de g: 2g
+  // Convert from raw to float based on g: 2g
   accel->ax = raw_x / 16384.0;
   accel->ay = raw_y / 16384.0;
   accel->az = raw_z / 16384.0;
